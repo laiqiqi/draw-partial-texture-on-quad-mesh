@@ -1,0 +1,1 @@
+# draw-partial-texture-on-quad-mesh
