@@ -5,6 +5,10 @@ public class DrawPartialTextureMesh : MonoBehaviour {
 
 	MeshFilter mf;
 	Vector2[] uvs;
+	Vector3[] originalVerts, rotatedVerts;
+	[Range(0,360)]
+	public float rotatedAngle = 0;
+	private float previousRotatedAngle = 0;
 
 	// Use this for initialization
 	void Start () {
@@ -15,6 +19,13 @@ public class DrawPartialTextureMesh : MonoBehaviour {
 		for (var i = 0; i < uvs.Length; i++) 
 			Debug.Log(uvs[i]);
 
+		originalVerts =  new Vector3[ mf.mesh.vertices.Length ];
+
+		for (var i = 0; i < mf.mesh.vertices.Length; i++) 
+			originalVerts [i] = mf.mesh.vertices [i];
+
+
+		rotatedVerts = new Vector3[ mf.mesh.vertices.Length];
 	}
 	
 	void Update () {
@@ -63,5 +74,22 @@ public class DrawPartialTextureMesh : MonoBehaviour {
 			mf.mesh.uv = uvs;
 		}
 
+		if (previousRotatedAngle != rotatedAngle) {
+			Rotate();
+			previousRotatedAngle = rotatedAngle;
+		}
+
 	}
+
+	void Rotate()
+	{
+		Quaternion qAngle = Quaternion.AngleAxis( rotatedAngle, new Vector3(0,0,1) );
+
+		for (int i=0; i < rotatedVerts.Length; i++) {
+			rotatedVerts[i] = qAngle * originalVerts[i];
+		}
+
+		mf.mesh.vertices = rotatedVerts;
+	}
+
 }
